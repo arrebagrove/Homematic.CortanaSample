@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<VoiceCommands xmlns="http://schemas.microsoft.com/voicecommands/1.2">
+  <CommandSet xml:lang="de" Name="commandSet_de">
+    <CommandPrefix> Mein Haus, </CommandPrefix>
+    <Example> Schalte die Bären ein </Example>
+
+    <Command Name="toggleSwitch">
+      <Example> Schalte die Bären ein </Example>
+      <ListenFor> Schalte {pref} {switch} {state} </ListenFor>
+      <Feedback> Ich schalte {pref} {switch} {state} </Feedback>
+      <VoiceCommandService Target="CortanaAppService"/>
+    </Command>
+
+    <PhraseList Label="pref">
+      <Item>den</Item>
+      <Item>der</Item>
+      <Item>die</Item>
+      <Item>das</Item>
+      <Item>alle</Item>
+    </PhraseList>
+
+    <PhraseList Label="switch">
+      <Item>Bären</Item>
+    </PhraseList>
+
+    <PhraseList Label="state">
+      <Item>ein</Item>
+      <Item>aus</Item>
+    </PhraseList>
+    
+  </CommandSet>
+
+  <!-- Other CommandSets for other languages -->
+
+</VoiceCommands>
