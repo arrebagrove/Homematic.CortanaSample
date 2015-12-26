@@ -32,4 +32,31 @@
 
   <!-- Other CommandSets for other languages -->
 
+  <CommandSet xml:lang="en" Name="commandSet_en">
+    <CommandPrefix> My home, </CommandPrefix>
+    <Example> switch the bears on </Example>
+
+    <Command Name="toggleSwitch">
+      <Example> switch the bears on </Example>
+      <ListenFor> switch {pref} {switch} {state} </ListenFor>
+      <Feedback> I am switching {pref} {switch} {state} </Feedback>
+      <VoiceCommandService Target="CortanaAppService"/>
+    </Command>
+
+    <PhraseList Label="pref">
+      <Item>the</Item>
+      <Item>all</Item>
+    </PhraseList>
+
+    <PhraseList Label="switch">
+      <Item>bears</Item>
+    </PhraseList>
+
+    <PhraseList Label="state">
+      <Item>on</Item>
+      <Item>off</Item>
+    </PhraseList>
+
+  </CommandSet>
+
 </VoiceCommands>

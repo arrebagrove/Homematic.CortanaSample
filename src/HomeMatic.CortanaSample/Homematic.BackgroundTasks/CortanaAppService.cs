@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -74,25 +75,40 @@ namespace Homematic.BackgroundTasks
         private async Task ToggleSwitch(string pref, string switchname, string state)
         {
             HttpClient client = new HttpClient();
-            var newvalue = state == "ein" ? "true" : "false";
+            var newvalue = state == "ein" || state == "on" ? "true" : "false";
             var uri =
                 new Uri(String.Format("http://homematic-ccu2/config/xmlapi/statechange.cgi?ise_id=1643&new_value={0}",
                     newvalue));
-            var result = await client.GetAsync(uri);
-            if (result.IsSuccessStatusCode)
-            {
-                // First, create the VoiceCommandUserMessage with the strings 
-                // that Cortana will show and speak.
-                var userMessage = new VoiceCommandUserMessage();
-                userMessage.DisplayMessage = String.Format("Ich habe {0} {1} {2} geschaltet", pref, switchname, state);
-                userMessage.SpokenMessage = String.Format("Ich habe {0} {1} {2} geschaltet", pref, switchname, state);
 
-                var response =
-                    VoiceCommandResponse.CreateResponse(
-                        userMessage);
-                await voiceServiceConnection.ReportSuccessAsync(response);
+            bool success = true;
+            try
+            {
+                var result = await client.GetAsync(uri);
+                if (result.IsSuccessStatusCode)
+                {
+                    // First, create the VoiceCommandUserMessage with the strings 
+                    // that Cortana will show and speak.
+                    var userMessage = new VoiceCommandUserMessage();
+                    userMessage.DisplayMessage = String.Format("Ich habe {0} {1} {2} geschaltet", pref, switchname, state);
+                    userMessage.SpokenMessage = String.Format("Ich habe {0} {1} {2} geschaltet", pref, switchname, state);
+
+                    var response =
+                        VoiceCommandResponse.CreateResponse(
+                            userMessage);
+                    await voiceServiceConnection.ReportSuccessAsync(response);
+                }
+                else
+                {
+                    success = false;
+                }
             }
-            else
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                success = false;
+            }
+
+            if(!success)
             {
                 var userMessage = new VoiceCommandUserMessage();
                 userMessage.DisplayMessage = String.Format("Ich konnte {0} {1} nicht {2} schalten", pref, switchname,
@@ -140,7 +156,7 @@ namespace Homematic.BackgroundTasks
         private async void LaunchAppInForeground()
         {
             var userMessage = new VoiceCommandUserMessage();
-            userMessage.SpokenMessage = "Starte Homematic Cortana Sample";
+            userMessage.SpokenMessage = "Starting Homematic Cortana sample";
 
             var response = VoiceCommandResponse.CreateResponse(userMessage);
 
